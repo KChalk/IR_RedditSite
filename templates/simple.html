@@ -1,0 +1,31 @@
+<!doctype html>
+<title>Simple /r/ Search</title>
+<body>
+    <form method="post">
+        <h1>Simple /r/ Search</h1>
+        {{error}}
+    <hr/>
+    <p>
+        <label for="prefix">/r/ name prefix (3 or more chars)</label>
+        <input name="prefix" id="prefix">
+        <input type="submit" value="PrefixSearch">
+    </p>
+    <p>
+        <label for="r">/r/ (full name)</label>
+        <input name="r" id="r">
+        <input type="submit" value="View /r/">
+      </form>
+    </p>
+    <hr/>
+
+    <p> Query was: {{ query }}  </p>
+
+    Prefix search results:
+    <table>
+            {% for r in p_res %}
+            <tr>
+                <td>{{r}}</td>
+            </tr>
+            {% endfor %}
+</body>
+
