@@ -15,10 +15,14 @@
         <input name="r" id="r">
         <input type="submit" value="View /r/">
       </form>
+
     </p>
     <hr/>
 
-    <p> Query was: {{ query }}  </p>
+    <p> Query was: {{ query }}  
+        <a href="{{ url_for('subpage', subname=query) }}">{{query}}</a>
+
+    </p>
 
     Prefix search results:
     <table>

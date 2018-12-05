@@ -41,7 +41,7 @@ def simple():
                 error= 'Query "{}"does not match any subreddit. Try the prefix searcher?'.format(query)
                 return render_template('/simple.html',p_res='', query='',error=error)
             #otherwise return /r/ page
-            return render_template('/simple.html', p_res=[], query=str(r),error=error)
+            return redirect(url_for('subpage', subname=query))
         
         #search for sub by prefix
         if len(prefix)>2:
@@ -65,6 +65,9 @@ def simple():
     #just load the page
     return render_template('/simple.html', p_res=[], query='', error=error)
     
+@app.route('/<subname>')
+def subpage(subname=None):
+    return render_template('r.html', rname=subname)
 
 if __name__ == "__main__":
    
