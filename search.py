@@ -4,6 +4,7 @@ from flask import (Blueprint, flash, g, redirect, render_template, request, sess
 from collections import deque
 import plyvel
 import json
+import pandas
 
 app = Flask(__name__)
 
@@ -11,12 +12,27 @@ def makedb():
     #needed info: is reddit in database, prefix iterator, reddit topics, topic words (convert from ints), topic docs
     # reading files..
     topicfile= '15-12_topics.json'
-    subfile=   'RS_2015-12_transformed.json'
+    subfile=   '15-12_transformed.json'
     vocabfile=  'RS_2015-12_vocab.txt'
 
-    db=plyvel.DB("Database", create_if_missing=True)
-    #sub_list= ['leagueoflegends', 'gaming', 'DestinyTheGame', 'DotA2', 'ContestofChampions', 'StarWarsBattlefront', 'Overwatch', 'WWII', 'hearthstone', 'wow', 'heroesofthestorm', 'destiny2', 'darksouls3', 'fallout', 'SuicideWatch', 'depression', 'OCD', 'dpdr', 'proED', 'Anxiety', 'BPD', 'socialanxiety', 'mentalhealth', 'ADHD', 'bipolar', 'buildapc', 'techsupport', 'buildapcforme', 'hacker', 'SuggestALaptop', 'hardwareswap', 'laptops', 'computers', 'pcmasterrace', 'relationshps', 'relationship_advice', 'breakups', 'dating_advice', 'LongDistance', 'polyamory', 'wemetonline', 'MDMA', 'Drugs', 'trees', 'opiates', 'LSD', 'tifu', 'r4r', 'AskReddit', 'reddit.com', 'tipofmytongue', 'Life', 'Advice', 'jobs', 'teenagers', 'HomeImprovement', 'redditinreddit', 'FIFA', 'nba', 'hockey', 'nfl', 'mls', 'baseball', 'BokuNoHeroAcademia', 'anime', 'movies', 'StrangerThings']
+    import json
+    import pandas as pd
 
+    topicfile= '15-12_topics.json'
+    subfile=   '15-12_transformed.json'
+    vocabfile=  'RS_2015-12._vocab.txt'
+
+    subs_pd=pd.read_json(subfile, lines=True)
+    topic_pd=pd.read_json(topicfile, lines=True)
+
+    vocablist=[]
+    with open(vocabfile,encoding='utf-8') as v: 
+        for line in v:
+            vocablist.append(line[:-1])
+
+
+
+    db=plyvel.DB("Database", create_if_missing=True)
     wb=db.write_batch()
 
 
@@ -30,6 +46,7 @@ def makedb():
     with open(topicfile) as t:
         for line in t: 
             topic=json.loads(line)
+            i= topic[]
             
             wb.put(bytes(name,'ascii'), i.to_bytes(2,byteorder='big'))
             
