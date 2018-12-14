@@ -22,7 +22,7 @@ def main():
         .config("spark.some.config.option", "some-value") \
         .getOrCreate()
 
-    file="file:////l2/corpora/reddit/submissions/RS_2018-09.xz"
+    file="file:////l2/corpora/reddit/submissions/RS_2018-08.xz"
     output='output_'+file[-14:-3]
 
     sc = spark.sparkContext
@@ -127,7 +127,7 @@ def calculatePosts2(posts, sc, ss):
     getfreqsUDF = udf(getfreqs, MapType(StringType(), IntegerType()))
 
     #count words per dictionary
-#	countdict = posts.withColumn("counts", getfreqsUDF('splittext',broadcastDicts.value))
+	#countdict = posts.withColumn("counts", getfreqsUDF('splittext',broadcastDicts.value))
     countdict = posts.withColumn("counts", getfreqsUDF('tokens'))
     
     #new df without self text
@@ -153,8 +153,8 @@ def calculatePosts2(posts, sc, ss):
     tidyfreqDF=counts
 
     #convert counts to frequencies
-#	for dict in broadcastDicts.value['dictnames']:
-#		dictname=broadcastDicts.value['dictnames'][dict]
+	#for dict in broadcastDicts.value['dictnames']:
+	#	dictname=broadcastDicts.value['dictnames'][dict]
 
     for d in DICTIONARIES['dictnames']:
         dictname=DICTIONARIES['dictnames'][d]
