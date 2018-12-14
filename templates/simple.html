@@ -1,6 +1,6 @@
-<!doctype html>
-<title>Simple /r/ Search</title>
-<body>
+{% extends "sitemeta.html" %}
+{% block title %}Simple /r/ Search{% endblock %}
+{% block content %}
     <form method="post">
         <h1>Simple /r/ Search</h1>
         {{error}}
@@ -19,7 +19,7 @@
     </p>
     <hr/>
 
-    <p> Query was: {{ query }}  
+    <p> Query was: {{ query }}
         <a href="{{ url_for('subpage', subname=query) }}">{{query}}</a>
 
     </p>
@@ -31,5 +31,5 @@
                 <td>{{r}}</td>
             </tr>
             {% endfor %}
-</body>
-
+    </table>
+{% endblock %}
