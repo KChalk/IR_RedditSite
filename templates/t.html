@@ -1,9 +1,9 @@
 <!doctype html>
-<title>/r/{{subname}}</title>
+<title>/t/{{topicID}}</title>
 <body>
     <form method="post">
-        <h1>Hello my name is {{subname}}</h1>
-        The concatenation of all posts to this subreddit has a topic distribution of:
+        <h1>Hello my name is {{topicID}}</h1>
+        This topic's most common words are:
         <table>
             {% for topics, score in t_res %}
             <tr>
