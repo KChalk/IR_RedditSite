@@ -11,6 +11,11 @@ app = Flask(__name__)
 def makedb():
     #needed info: is reddit in database, prefix iterator, reddit topics, topic words (convert from ints), topic docs
     # reading files..
+    fast = True
+    if fast:
+        db = plyvel.DB("Database", create_if_missing=True)
+        db.put(b'gaming',b'g')
+        return db
     topicfile= '15-12_topics.json'
     subfile=   '15-12_transformed.json'
     vocabfile=  'RS_2015-12_vocab.txt'
