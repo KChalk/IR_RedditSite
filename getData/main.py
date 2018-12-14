@@ -66,7 +66,7 @@ def main():
     topic_indices.write.json(output+'_topics.json', mode='overwrite')
     '''
     print('\n\n\n Transform DataSet \n\n\n')
-    subDF=lda_model.transform(subDF)
+    subDF=lda_model.transform(subDF).drop('vectors')
     #topicDF=lda_model.transform(vecDF)
     subDF.write.json(output+'_transformed.json', mode='overwrite')
 
