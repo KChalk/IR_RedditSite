@@ -69,7 +69,7 @@ def main():
     subDF=lda_model.transform(subDF)
     #topicDF=lda_model.transform(vecDF)
     subDF.write.json(output+'_transformed.json', mode='overwrite')
- 
+
 def tokenize(s):
     tokens=[]
     s=s.strip().lower()
@@ -114,4 +114,3 @@ def convertToVec(df, sc, ss, outputName, inputCol='tokens'):
 
 if __name__ == "__main__":
     main()
- 
