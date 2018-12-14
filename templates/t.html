@@ -2,14 +2,21 @@
 {% block title}/t/{{topicID}}{%endblock}
 {% block content}
     <form method="post">
-        <h1>Hello my name is {{topicID}}</h1>
-        This topic's most common words are:
+        <h1>Topic: {{topicID}}</h1>
+        <p>This topic's most common words are:</p>
         <table>
-            {% for topics, score in t_res %}
+            <caption>Most common words for {{topicId}</caption>
+            <thead>
+                    <th>Word</th>
+                    <th>Score</th>
+            </thead>
+            <tbody>
+            {% for word, score in t_res %}
             <tr>
-                <td>{{topic}: score}</td>
+                <td>{{word}}</td>
+                <td>{{score}}</td>
             </tr>
             {% endfor %}
-
-    <hr/>
+            </tbody>
+        </table>
 {%endblock}
