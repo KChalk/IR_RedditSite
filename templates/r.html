@@ -1,17 +1,14 @@
-<!doctype html>
-<title>/r/{{subname}}</title>
-<body>
-    <form method="post">
+{% extends "sitemeta.html" %}
+{% block title}/r/{{subname}}{%endblock}
+{% block content}
         <h1>Hello my name is {{subname}}</h1>
-        The concatenation of all posts to this subreddit has a topic distribution of:
+        <p>The concatenation of all posts to this subreddit has a
+		topic distribution of:</p>
         <table>
             {% for topics, score in t_res %}
             <tr>
                 <td>{{topic}: score}</td>
             </tr>
             {% endfor %}
-
-    <hr/>
-
-</body>
-
+	</table>
+{% endblock }
