@@ -1,6 +1,6 @@
-<!doctype html>
-<title>/t/{{topicID}}</title>
-<body>
+{% extends "sitemeta.html" %}
+{% block title}/t/{{topicID}}{%endblock}
+{% block content}
     <form method="post">
         <h1>Hello my name is {{topicID}}</h1>
         This topic's most common words are:
@@ -12,6 +12,4 @@
             {% endfor %}
 
     <hr/>
-
-</body>
-
+{%endblock}
