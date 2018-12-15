@@ -1,5 +1,5 @@
 {% extends "sitemeta.html" %}
-{% block title}/r/{{subname}}{% endblock %}
+{% block title %}/r/{{subname}}{% endblock %}
 {% block content %}
 <h1>Subreddit: {{subname}}</h1>
 <p>The concatenation of all posts to this subreddit has a topic distribution of:</p>
@@ -10,12 +10,13 @@
             <th>Score</th>
     </thead>
     <tbody>
-    {% for topic, score in t_res %}
+        {{t_res}}
+    {#% for counter, score in enumerate(t_res["results"]) %}
     <tr>
-        <td>{{topic}}</td>
+        <td>{{counter}}</td>
         <td>{{score}}</td>
     </tr>
-    {% endfor %}
+    {% endfor %#}
     </tbody>
 </table>
 {% endblock %}
