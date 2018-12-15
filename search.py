@@ -90,18 +90,21 @@ def makedb():
         wb.put(name, b)
 
     wb.write()
+    db.close()
     return db
 
 @app.route('/')
 def home():
+    if 'database' not in g:
+        db=makedb()
+        g.database=db
+        print("105:", g.__dict__)
+
     return redirect(url_for('simple'))
 
 @app.route("/simple",methods=('GET', 'POST'))
 def simple():
-    #Initialize db
-    if 'db' not in g:
-        g.db=makedb()
-        
+    database=plyvel.DB("Database", create_if_missing=True)        
     #manage inputs
     error=''
     if request.method=="POST":
@@ -111,7 +114,7 @@ def simple():
 
         # search for full subreddit name
         if query != '':
-            r=g.db.get(bytes(query,'ascii'),default=b'0')
+            r=database.get(bytes(query,'ascii'),default=b'0')
             if r == b'0':
                 error= 'Query "{}"does not match any subreddit. Try the prefix searcher?'.format(query)
                 return render_template('/simple.html',p_res='', query='',error=error)
@@ -120,12 +123,13 @@ def simple():
 
         #search for sub by prefix
         if len(prefix)>2:
-            results_it=g.db.iterator(prefix=bytes(prefix,'ascii'))
+            results_it=database.iterator(prefix=bytes(prefix,'ascii'))
             results=[]
             for r in results_it:
                 results.append(r[0])
             if len(results)==0:
                 error = 'No results for {}... Try another /r/ prefix'.format(prefix)
+                database.close()
                 return render_template('/simple.html', p_res=[], query='',error=error)
 
         else:
@@ -133,11 +137,12 @@ def simple():
 
         if error !='':
             #print error
+            database.close()
             return render_template('/simple.html', p_res=[], query='',error=error)
-
+        database.close()
         return render_template('/simple.html', p_res=results, query=query, error=error)
 
-    #just load the page
+    database.close()#just load the page
     return render_template('/simple.html', p_res=[], query='', error=error)
 
 @app.route('/favicon.ico')
@@ -147,17 +152,24 @@ def foo():
     
 @app.route('/<subname>')
 def subpage(subname=None):
+    database=plyvel.DB("Database", create_if_missing=True)        
+
     print("===SUBNAME:", subname)
     name=bytes(subname,'utf-8')
-    db_entry= g.db.get(name,default=b'0')
+    print("155:", g.__dict__)
+    db_entry= database.get(name,default=b'0')
     t_res=json.loads(db_entry)
+    database.close()
     return render_template('r.html', rname=subname, t_res=t_res)
 
 @app.route('/<topicID>')
 def topicpage(topicID=None):
-    db_entry= g.db.get(bytes(topicID,'ascii'),default=b'0')
+    database=plyvel.DB("Database", create_if_missing=True)        
+
+    db_entry= database.get(bytes(topicID,'ascii'),default=b'0')
     words=db_entry['words']
     docs=db_entry['docs']
+    database.close()
     return render_template('t.html', topic=topicID, words=words, docs=docs)
 
 
