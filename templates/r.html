@@ -12,7 +12,9 @@
     <tbody>
     {% for topic, score in t_res %}
     <tr>
-        <td>{{topic}}</td>
+        
+        <td>                        
+            <a href="{{ url_for('topicpage', topicID=topic) }}">{{topic}}</a> </td>
         <td>{{score}}</td>
     </tr>
     {% endfor %}

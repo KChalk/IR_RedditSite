@@ -19,7 +19,7 @@ def makedb():
     ## READING SUB TOPICS
     old_subs_pd=pd.read_json(subfile, lines=True)
 
-    fast = True
+    fast = False
     if fast:
         old_subs_pd=old_subs_pd.iloc[:10,:] #comment for full set
 
@@ -80,7 +80,7 @@ def makedb():
     for t,topic in topic_pd.iterrows():
         words=topic['words']
         weights=topic['termWeights']
-        name=b'topic: '+t.to_bytes(2,byteorder='big')+b'words'
+        name=b'topic: '+t.to_bytes(2,byteorder='big')
 
         #pairs=zip(words, weights)
         #wb.put(name, pairs)
@@ -166,18 +166,21 @@ def subpage(subname=None):
 @app.route('/t/<topicID>')
 def topicpage(topicID=None):
     database=plyvel.DB("Database", create_if_missing=True)        
-    print(topicID)
-    db_entry= database.get(bytes(topicID,'utf-8'),default=b'0')
+    topicID=int(topicID)
+    db_entry= database.get(b'topic: '+topicID.to_bytes(2,byteorder='big'),default=b'0')
     if db_entry==b'0':
-        return render_template('t.html', topicID=topicID, words=[topicID], docs=[topicID])
+        return render_template('t.html', topicID=topicID, t_res=[])
 
     d=json.loads(db_entry)
-    print(d)
-
-    words=d['words']
-    docs=d['docs']
     database.close()
-    return render_template('t.html', topic=topicID, words=words, docs=docs)
+    
+    
+    words=d['words'][:10]
+    weights=d['weights'][:10]
+    subs=d['subs']
+
+    res=zip(words,weights)
+    return render_template('t.html', topicID=str(topicID), t_res=res, subs=subs)
 
 
 if __name__ == "__main__":

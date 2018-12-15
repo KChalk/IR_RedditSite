@@ -4,8 +4,9 @@
         <h1>Topic: {{topicID}}</h1>
         <p>This topic's most common words are:</p>
         <table>
-            <caption>Most common words for {{topicId}}</caption>
-            <thead>
+            <!--<caption>Most common words for {{topicId}}</caption>
+            -->
+                <thead>
                     <th>Word</th>
                     <th>Score</th>
             </thead>
@@ -18,4 +19,23 @@
             {% endfor %}
             </tbody>
         </table>
+
+        <p>Subreddits which have the highest values fo this topic are are:</p>
+        <table>
+            <!--<caption>Highest ranking /r/'s' for {{topicId}}</caption>
+            -->
+            <thead>
+                    <th>/r/</th>
+            </thead>
+            <tbody>
+            {% for sub in subs %}
+            <tr>
+                <td>
+                        <li><a href="{{ url_for('subpage', subname=sub) }}">{{sub}}</li></a>
+                    </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+<br>
 {% endblock %}
