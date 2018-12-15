@@ -1,5 +1,5 @@
 {% extends "sitemeta.html" %}
-{% block title %}Simple /r/ Search{% endblock %}
+{% block title %}Simple Subreddit Search{% endblock %}
 {% block localstyle %}
 #error-msg {
 	color: black;
@@ -11,7 +11,7 @@
 {% block content %}
 <form method="post">
 
-<h1>Simple /r/ Search</h1>
+<h1>Simple Subreddit Search</h1>
 
 {%if error %}
 <div id="error-msg">
@@ -22,9 +22,8 @@
 
 <div>
     <h2>Prefix Search</h2>
-    <div><label for="prefix">/r/ name prefix (3 or more chars):</label></div>
     <div><input type="text" name="prefix" id="prefix"><button type="submit" value="PrefixSearch">Search</div>
-
+    <div>(3 or more characters)</div>
     {% if p_res %}
     <ul>
             {% for r, _ in p_res %}
@@ -37,9 +36,8 @@
 <hr>
 
 <div>
-    <label for="r">/r/ (full name)</label>
-    <input name="r" id="r">
-    <input type="submit" value="View /r/">
+    <h2>Full-name Search</h2>
+    <div><input name="r" id="r"> <button type="submit" value="View /r/">Search</button></div>
 </div>
 
 <!--
