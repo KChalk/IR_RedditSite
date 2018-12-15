@@ -11,7 +11,7 @@ app = Flask(__name__)
 def makedb():
     #needed info: is reddit in database, prefix iterator, reddit topics, topic words (convert from ints), topic docs
     # reading files..
-    fast = True
+    fast = False
     if fast:
         db = plyvel.DB("Database", create_if_missing=True)
         db.put(b'gaming',b'g')
@@ -69,15 +69,20 @@ def makedb():
 
     for _,subreddit in subs_pd.iterrows():
         t_res=list(subreddit.iloc[1:])
-        print(t_res)
         wb.put(bytes(name,'ascii'), i.to_bytes(2,byteorder='big'))
 
     # needed info: is reddit in database, prefix iterator, reddit topics,
     # topic subs
-    with open(subfile) as f:
-        for line in f:
-            sub=json.loads(line)
-            wb.put(bytes(name,'ascii'), i.to_bytes(2,byteorder='big'))
+    for t,topic in topic_pd.iterrows():
+        words=topic['words']
+        weights=topic['termWeights']
+        name=b'topic: '+t.to_bytes(2,byteorder='big')+b'words'
+
+        pairs=zip(words, weights)
+        wb.put(bytes(name,'ascii'), pairs)
+
+        subs=topic['Top 10 reddits']
+        wb.put(bytes(name,'ascii'), subs)
 
     wb.write()
     return db
