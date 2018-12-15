@@ -167,8 +167,10 @@ def topicpage(topicID=None):
     database=plyvel.DB("Database", create_if_missing=True)        
 
     db_entry= database.get(bytes(topicID,'ascii'),default=b'0')
-    words=db_entry['words']
-    docs=db_entry['docs']
+    d=json.loads(db_entry)
+    
+    words=d['words']
+    docs=d['docs']
     database.close()
     return render_template('t.html', topic=topicID, words=words, docs=docs)
 
