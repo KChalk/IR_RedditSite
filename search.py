@@ -1,6 +1,6 @@
 from flask import Flask
 
-from flask import (Blueprint, flash, g, redirect, render_template, request, session, url_for)
+from flask import (Blueprint, flash, g, redirect, render_template, request, session, url_for, abort)
 from collections import deque
 import plyvel
 import json
@@ -11,29 +11,30 @@ app = Flask(__name__)
 def makedb():
     #needed info: is reddit in database, prefix iterator, reddit topics, topic words (convert from ints), topic docs
     # reading files..
-    fast = False
-    if fast:
-        db = plyvel.DB("Database", create_if_missing=True)
-        db.put(b'gaming',b'g')
-        return db
 
-    topicfile= '15-12_topics.json'
-    subfile= '15-12_transformed.json'  #'small_transformed.json'
-    vocabfile=  'RS_2015-12._vocab.txt'
+    topicfile= 'getData/15-12_topics.json'
+    subfile= 'getData/15-12_transformed.json'  #'small_transformed.json'
+    vocabfile=  'getData/RS_2015-12._vocab.txt'
 
     ## READING SUB TOPICS
     old_subs_pd=pd.read_json(subfile, lines=True)
-    old_subs_pd=old_subs_pd.iloc[:10,:] #comment for full set
+
+    fast = True
+    if fast:
+        old_subs_pd=old_subs_pd.iloc[:10,:] #comment for full set
 
     subs_pd=old_subs_pd.copy()
-    for i, row in subs_pd.iterrows():
-        sub=row[0]
-        topics=row[1]['values']
-        temp_list=[]
-
-        for j in range(len(topics)):
-            temp_list.append(topics[j])
-        subs_pd['t_'+str(i)]=temp_list
+    temp_list=[]
+    for j in range(10):
+        temp_list.append([])
+        
+        for i, row in subs_pd.iterrows():
+            sub=row[0]
+            topics=row[1]['values']
+            temp_list[j].append(topics[j])
+        
+        print('templist len', len(temp_list),'sublist', len(subs_pd))
+        subs_pd['t_'+str(j)]=temp_list[j]
     subs_pd=subs_pd.drop('topicDistribution', axis=1)
 
     ## READING VOCAB
@@ -64,12 +65,15 @@ def makedb():
     topic_pd['Top 10 reddits']=metalist
 
     db=plyvel.DB("Database", create_if_missing=True)
+    
+    #openloop
     wb=db.write_batch()
-
 
     for _,subreddit in subs_pd.iterrows():
         t_res=list(subreddit.iloc[1:])
-        wb.put(bytes(name,'ascii'), i.to_bytes(2,byteorder='big'))
+        b=bytes(json.dumps({'results':t_res}),"utf-8")
+        name=bytes(str(subreddit['subreddit']),"utf-8")
+        wb.put(name, b)
 
     # needed info: is reddit in database, prefix iterator, reddit topics,
     # topic subs
@@ -78,11 +82,12 @@ def makedb():
         weights=topic['termWeights']
         name=b'topic: '+t.to_bytes(2,byteorder='big')+b'words'
 
-        pairs=zip(words, weights)
-        wb.put(bytes(name,'ascii'), pairs)
+        #pairs=zip(words, weights)
+        #wb.put(name, pairs)
 
         subs=topic['Top 10 reddits']
-        wb.put(bytes(name,'ascii'), subs)
+        b=bytes(json.dumps({'words':words,'weights':weights,'subs':subs}),"utf-8")
+        wb.put(name, b)
 
     wb.write()
     return db
@@ -96,7 +101,7 @@ def simple():
     #Initialize db
     if 'db' not in g:
         g.db=makedb()
-
+        
     #manage inputs
     error=''
     if request.method=="POST":
@@ -118,7 +123,7 @@ def simple():
             results_it=g.db.iterator(prefix=bytes(prefix,'ascii'))
             results=[]
             for r in results_it:
-                results.append(r)
+                results.append(r[0])
             if len(results)==0:
                 error = 'No results for {}... Try another /r/ prefix'.format(prefix)
                 return render_template('/simple.html', p_res=[], query='',error=error)
@@ -135,8 +140,14 @@ def simple():
     #just load the page
     return render_template('/simple.html', p_res=[], query='', error=error)
 
+@app.route('/favicon.ico')
+def foo():
+    abort(404)
+
+    
 @app.route('/<subname>')
 def subpage(subname=None):
+    print("===SUBNAME:", subname)
     db_entry= g.db.get(bytes(subname,'ascii'),default=b'0')
     t_res=db_entry['topic']
     return render_template('r.html', rname=subname, t_res=t_res)
