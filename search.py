@@ -166,8 +166,11 @@ def subpage(subname=None):
 @app.route('/t/<topicID>')
 def topicpage(topicID=None):
     database=plyvel.DB("Database", create_if_missing=True)        
-
+    print(topicID)
     db_entry= database.get(bytes(topicID,'utf-8'),default=b'0')
+    if db_entry==b'0':
+        return render_template('t.html', topicID=topicID, words=[topicID], docs=[topicID])
+
     d=json.loads(db_entry)
     print(d)
 
