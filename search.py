@@ -4,7 +4,7 @@ from flask import (Blueprint, flash, g, redirect, render_template, request, sess
 from collections import deque
 import plyvel
 import json
-import pandas
+import pandas as pd
 
 app = Flask(__name__)
 
@@ -16,44 +16,61 @@ def makedb():
         db = plyvel.DB("Database", create_if_missing=True)
         db.put(b'gaming',b'g')
         return db
-    topicfile= '15-12_topics.json'
-    subfile=   '15-12_transformed.json'
-    vocabfile=  'RS_2015-12_vocab.txt'
-
-    import json
-    import pandas as pd
 
     topicfile= '15-12_topics.json'
-    subfile=   '15-12_transformed.json'
+    subfile= '15-12_transformed.json'  #'small_transformed.json'
     vocabfile=  'RS_2015-12._vocab.txt'
 
-    subs_pd=pd.read_json(subfile, lines=True)
-    topic_pd=pd.read_json(topicfile, lines=True)
+    ## READING SUB TOPICS
+    old_subs_pd=pd.read_json(subfile, lines=True)
+    old_subs_pd=old_subs_pd.iloc[:10,:] #comment for full set
 
+    subs_pd=old_subs_pd.copy()
+    for i, row in subs_pd.iterrows():
+        sub=row[0]
+        topics=row[1]['values']
+        temp_list=[]
+
+        for j in range(len(topics)):
+            temp_list.append(topics[j])
+        subs_pd['t_'+str(i)]=temp_list
+    subs_pd=subs_pd.drop('topicDistribution', axis=1)
+
+    ## READING VOCAB
     vocablist=[]
-    with open(vocabfile,encoding='utf-8') as v:
+    with open(vocabfile,encoding='utf-8') as v: 
         for line in v:
             vocablist.append(line[:-1])
 
+    ##READING TOPICS VOCAB and TOPIC SUBS
+    topic_pd=pd.read_json(topicfile, lines=True)
 
+    metalist=[]
+    for i, topic in topic_pd.iterrows():
+        ind=topic[0]
+        val=topic[1]
+        topicNum=topic[2]
+        words=[]
+        for j in range(len(ind)):
+            words.append(vocablist[ind[j]])
+        metalist.append(words)
+    topic_pd['words']=metalist
+    
+    metalist=[]
+    for i in range(10):
+        top10=subs_pd.nlargest(10,'t_'+str(i)).set_index('subreddit')
+        metalist.append(top10.index.tolist())
+
+    topic_pd['Top 10 reddits']=metalist
 
     db=plyvel.DB("Database", create_if_missing=True)
     wb=db.write_batch()
 
 
-    # topic words (convert from ints),
-    vocablist=[]
-    with open(vocabfile) as v:
-        for line in v:
-            vocablist.append(line[:-1])
-
-
-    with open(topicfile) as t:
-        for line in t:
-            topic=json.loads(line)
-            #i= topic[]
-
-            wb.put(bytes(name,'ascii'), i.to_bytes(2,byteorder='big'))
+    for _,subreddit in subs_pd.iterrows():
+        t_res=list(subreddit.iloc[1:])
+        print(t_res)
+        wb.put(bytes(name,'ascii'), i.to_bytes(2,byteorder='big'))
 
     # needed info: is reddit in database, prefix iterator, reddit topics,
     # topic subs
