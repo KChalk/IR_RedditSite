@@ -26,7 +26,7 @@
     <div>(3 or more characters)</div>
     {% if p_res %}
     <ul>
-            {% for r, _ in p_res %}
+            {% for r in p_res %}
                 <li><a href="{{ url_for('subpage', subname=r) }}">{{r.decode("utf-8")}}</li></a>
             {% endfor %}
     </ul>
