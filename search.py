@@ -148,8 +148,9 @@ def foo():
 @app.route('/<subname>')
 def subpage(subname=None):
     print("===SUBNAME:", subname)
-    db_entry= g.db.get(bytes(subname,'ascii'),default=b'0')
-    t_res=db_entry['topic']
+    name=bytes(subname,'utf-8')
+    db_entry= g.db.get(name,default=b'0')
+    t_res=json.loads(db_entry)
     return render_template('r.html', rname=subname, t_res=t_res)
 
 @app.route('/<topicID>')
