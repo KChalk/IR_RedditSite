@@ -1,6 +1,6 @@
 {% extends "sitemeta.html" %}
-{% block title}/r/{{subname}}{%endblock}
-{% block content}
+{% block title}/r/{{subname}}{% endblock %}
+{% block content %}
         <h1>Subreddit: {{subname}}</h1>
         <p>The concatenation of all posts to this subreddit has a topic distribution of:</p>
         <table>
@@ -18,4 +18,4 @@
             {% endfor %}
             </tbody>
 	    </table>
-{% endblock }
+{% endblock %}

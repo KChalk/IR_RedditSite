@@ -1,11 +1,11 @@
 {% extends "sitemeta.html" %}
-{% block title}/t/{{topicID}}{%endblock}
-{% block content}
+{% block title %}/t/{{topicID}}{%endblock %}
+{% block content %}
     <form method="post">
         <h1>Topic: {{topicID}}</h1>
         <p>This topic's most common words are:</p>
         <table>
-            <caption>Most common words for {{topicId}</caption>
+            <caption>Most common words for {{topicId}}</caption>
             <thead>
                     <th>Word</th>
                     <th>Score</th>
@@ -19,4 +19,4 @@
             {% endfor %}
             </tbody>
         </table>
-{%endblock}
+{% endblock %}
