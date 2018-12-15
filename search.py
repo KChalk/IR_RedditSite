@@ -150,7 +150,7 @@ def foo():
     abort(404)
 
     
-@app.route('/<subname>')
+@app.route('/r/<subname>')
 def subpage(subname=None):
     database=plyvel.DB("Database", create_if_missing=True)        
 
@@ -159,17 +159,18 @@ def subpage(subname=None):
     print("155:", g.__dict__)
     db_entry= database.get(name,default=b'0')
     d=json.loads(db_entry)
-    t_res=d['results']
+    t_res=enumerate(d['results'])
     database.close()
     return render_template('r.html', rname=subname, t_res=t_res)
 
-@app.route('/<topicID>')
+@app.route('/t/<topicID>')
 def topicpage(topicID=None):
     database=plyvel.DB("Database", create_if_missing=True)        
 
-    db_entry= database.get(bytes(topicID,'ascii'),default=b'0')
+    db_entry= database.get(bytes(topicID,'utf-8'),default=b'0')
     d=json.loads(db_entry)
-    
+    print(d)
+
     words=d['words']
     docs=d['docs']
     database.close()
