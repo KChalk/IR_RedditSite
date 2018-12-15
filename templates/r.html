@@ -10,13 +10,12 @@
             <th>Score</th>
     </thead>
     <tbody>
-        {{t_res}}
-    {#% for counter, score in enumerate(t_res["results"]) %}
+    {% for id, score in t_res %}
     <tr>
-        <td>{{counter}}</td>
+        <td>{{id}}</td>
         <td>{{score}}</td>
     </tr>
-    {% endfor %#}
+    {% endfor %}
     </tbody>
 </table>
 {% endblock %}
