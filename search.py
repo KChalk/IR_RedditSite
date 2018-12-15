@@ -158,7 +158,8 @@ def subpage(subname=None):
     name=bytes(subname,'utf-8')
     print("155:", g.__dict__)
     db_entry= database.get(name,default=b'0')
-    t_res=json.loads(db_entry)
+    d=json.loads(db_entry)
+    t_res=d['results']
     database.close()
     return render_template('r.html', rname=subname, t_res=t_res)
 
