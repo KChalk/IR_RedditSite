@@ -3,9 +3,17 @@
 	<head>
 		<meta charset="utf-8">
 		<title>{% block title %}Untitled{% endblock %}</title>
+		<style type="text/css">
+table, th, td {
+	border: thin solid black;
+}
+
+{% block localstyle %}
+{% endblock %}
+		</style>
 	</head>
 	<body>
-		{% block content %}
-		{% endblock %}
+{% block content %}
+{% endblock %}
 	</body>
 </html>

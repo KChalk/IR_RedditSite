@@ -1,35 +1,53 @@
-<!doctype html>
-<title>Simple /r/ Search</title>
-<body>
-    <form method="post">
-        <h1>Simple /r/ Search</h1>
-        {{error}}
-    <hr/>
-    <p>
-        <label for="prefix">/r/ name prefix (3 or more chars)</label>
-        <input name="prefix" id="prefix">
-        <input type="submit" value="PrefixSearch">
-    </p>
-    <p>
-        <label for="r">/r/ (full name)</label>
-        <input name="r" id="r">
-        <input type="submit" value="View /r/">
-      </form>
+{% extends "sitemeta.html" %}
+{% block title %}Simple Subreddit Search{% endblock %}
+{% block localstyle %}
+#error-msg {
+	color: black;
+	border: thin solid red;
+	background: #f88;
+	padding: 1em;
+}
+{% endblock %}
+{% block content %}
+<form method="post">
 
-    </p>
-    <hr/>
+<h1>Simple Subreddit Search</h1>
 
-    <p> Query was: {{ query }}  
-        <a href="{{ url_for('subpage', subname=query) }}">{{query}}</a>
+{%if error %}
+<div id="error-msg">
+{{error}}
+</div>
+{% endif %}
+<hr>
 
-    </p>
-
-    Prefix search results:
-    <table>
+<div>
+    <h2>Prefix Search</h2>
+    <div><input type="text" name="prefix" id="prefix"><button type="submit" value="PrefixSearch">Search</div>
+    <div>(3 or more characters)</div>
+    {% if p_res %}
+    <ul>
             {% for r in p_res %}
-            <tr>
-                <td>{{r}}</td>
-            </tr>
+                <li><a href="{{ url_for('subpage', subname=r) }}">{{r.decode("utf-8")}}</li></a>
             {% endfor %}
-</body>
+    </ul>
+    {% endif %}
+</div>
 
+<hr>
+
+<div>
+    <h2>Full-name Search</h2>
+    <div><input name="r" id="r"> <button type="submit" value="View /r/">Search</button></div>
+</div>
+
+<!--
+    {% if query != "" %}
+    <div>
+    <p>
+        Query was: {{ query }} <a href="{{ url_for('subpage', subname=query) }}">{{query}}</a>
+    </p>
+    {% endif %}
+</div>
+-->
+</form>
+{% endblock %}

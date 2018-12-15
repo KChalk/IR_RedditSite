@@ -1,17 +1,21 @@
-<!doctype html>
-<title>/t/{{topicID}}</title>
-<body>
-    <form method="post">
-        <h1>Hello my name is {{topicID}}</h1>
-        This topic's most common words are:
+{% extends "sitemeta.html" %}
+{% block title %}/t/{{topicID}}{%endblock %}
+{% block content %}
+        <h1>Topic: {{topicID}}</h1>
+        <p>This topic's most common words are:</p>
         <table>
-            {% for topics, score in t_res %}
+            <caption>Most common words for {{topicId}}</caption>
+            <thead>
+                    <th>Word</th>
+                    <th>Score</th>
+            </thead>
+            <tbody>
+            {% for word, score in t_res %}
             <tr>
-                <td>{{topic}: score}</td>
+                <td>{{word}}</td>
+                <td>{{score}}</td>
             </tr>
             {% endfor %}
-
-    <hr/>
-
-</body>
-
+            </tbody>
+        </table>
+{% endblock %}

@@ -1,14 +1,21 @@
 {% extends "sitemeta.html" %}
-{% block title}/r/{{subname}}{%endblock}
-{% block content}
-        <h1>Hello my name is {{subname}}</h1>
-        <p>The concatenation of all posts to this subreddit has a
-		topic distribution of:</p>
-        <table>
-            {% for topics, score in t_res %}
-            <tr>
-                <td>{{topic}: score}</td>
-            </tr>
-            {% endfor %}
-	</table>
-{% endblock }
+{% block title}/r/{{subname}}{% endblock %}
+{% block content %}
+<h1>Subreddit: {{subname}}</h1>
+<p>The concatenation of all posts to this subreddit has a topic distribution of:</p>
+<table>
+    <caption>Topic Distribution for {{subname}}</caption>
+    <thead>
+            <th>Topic</th>
+            <th>Score</th>
+    </thead>
+    <tbody>
+    {% for topic, score in t_res %}
+    <tr>
+        <td>{{topic}}</td>
+        <td>{{score}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
