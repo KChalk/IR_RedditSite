@@ -159,7 +159,8 @@ def subpage(subname=None):
     print("155:", g.__dict__)
     db_entry= database.get(name,default=b'0')
     d=json.loads(db_entry)
-    t_res=enumerate(d['results'])
+    t_res=d['results']
+    t_res=pd.DataFrame({ 'num':['0','1','2','3','4','5','6','7','8','9'],'val':t_res}).sort_values(by='val', ascending=False).values
     database.close()
     return render_template('r.html', rname=subname, t_res=t_res)
 
